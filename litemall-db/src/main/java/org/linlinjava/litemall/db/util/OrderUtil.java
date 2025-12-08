@@ -31,6 +31,10 @@ public class OrderUtil {
     public static final Short STATUS_REFUND = 202;
     public static final Short STATUS_REFUND_CONFIRM = 203;
     public static final Short STATUS_AUTO_CONFIRM = 402;
+    public static final Short STATUS_VERIFY_PENDING = 501;
+    public static final Short STATUS_VERIFIED = 502;
+    public static final Short STATUS_VERIFY_EXPIRED = 503;
+    public static final Short STATUS_VERIFY_REFUND = 504;
 
     public static String orderStatusText(LitemallOrder order) {
         int status = order.getOrderStatus().intValue();
@@ -75,9 +79,24 @@ public class OrderUtil {
             return "已收货(系统)";
         }
 
+        if (status == 501) {
+            return "待核销";
+        }
+
+        if (status == 502) {
+            return "已核销";
+        }
+
+        if (status == 503) {
+            return "核销过期";
+        }
+
+        if (status == 504) {
+            return "核销退款";
+        }
+
         throw new IllegalStateException("orderStatus不支持");
     }
-
 
     public static OrderHandleOption build(LitemallOrder order) {
         int status = order.getOrderStatus().intValue();
@@ -108,6 +127,18 @@ public class OrderUtil {
             handleOption.setComment(true);
             handleOption.setRebuy(true);
             handleOption.setAftersale(true);
+        } else if (status == 501) {
+            // handleOption.setVerify(true);
+            handleOption.setRefund(true);
+        } else if (status == 502) {
+            handleOption.setDelete(true);
+            handleOption.setComment(true);
+            handleOption.setRebuy(true);
+        } else if (status == 503) {
+            handleOption.setDelete(true);
+            handleOption.setRefund(true);
+        } else if (status == 504) {
+            handleOption.setDelete(true);
         } else {
             throw new IllegalStateException("status不支持");
         }
@@ -135,15 +166,14 @@ public class OrderUtil {
         } else if (showType.equals(4)) {
             // 待评价订单
             status.add((short) 401);
-//            系统超时自动取消，此时应该不支持评价
-//            status.add((short)402);
+            // 系统超时自动取消，此时应该不支持评价
+            // status.add((short)402);
         } else {
             return null;
         }
 
         return status;
     }
-
 
     public static boolean isCreateStatus(LitemallOrder litemallOrder) {
         return OrderUtil.STATUS_CREATE == litemallOrder.getOrderStatus().shortValue();

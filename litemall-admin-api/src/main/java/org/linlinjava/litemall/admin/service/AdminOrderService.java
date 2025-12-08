@@ -315,4 +315,26 @@ public class AdminOrderService {
 
         return ResponseUtil.ok();
     }
+
+    @Transactional
+    public Object verify(String body) {
+        Integer orderId = JacksonUtil.parseInteger(body, "orderId");
+        if (orderId == null) {
+            return ResponseUtil.badArgument();
+        }
+        LitemallOrder order = orderService.findById(orderId);
+        if (order == null) {
+            return ResponseUtil.badArgument();
+        }
+        if (!order.getOrderStatus().equals(OrderUtil.STATUS_VERIFY_PENDING)) {
+            return ResponseUtil.fail(ORDER_CONFIRM_NOT_ALLOWED, "订单不能确认收货");
+        }
+        order.setOrderStatus(OrderUtil.STATUS_VERIFIED);
+        order.setEndTime(LocalDateTime.now());
+        if (orderService.updateWithOptimisticLocker(order) == 0) {
+            return ResponseUtil.updatedDateExpired();
+        }
+        logHelper.logOrderSucceed("核销", "订单编号 " + order.getOrderSn());
+        return ResponseUtil.ok();
+    }
 }

@@ -48,6 +48,7 @@ module.exports = {
     resolve: {
       alias: {
         '@': resolve('src')
+        , 'echarts/lib/CoordinateSystem': resolve('src/shims/CoordinateSystem')
       }
     }
   },

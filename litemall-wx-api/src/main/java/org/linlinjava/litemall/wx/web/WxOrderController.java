@@ -29,20 +29,26 @@ public class WxOrderController {
      * @param userId   用户ID
      * @param showType 显示类型，如果是0则是全部订单
      * @param page     分页页数
-     * @param limit     分页大小
+     * @param limit    分页大小
      * @param sort     排序字段
-     * @param order     排序方式
+     * @param order    排序方式
      * @return 订单列表
      */
     @GetMapping("list")
     public Object list(@LoginUser Integer userId,
-                       @RequestParam(defaultValue = "0") Integer showType,
-                       @RequestParam(defaultValue = "1") Integer page,
-                       @RequestParam(defaultValue = "10") Integer limit,
-                       @Sort @RequestParam(defaultValue = "add_time") String sort,
-                       @Order @RequestParam(defaultValue = "desc") String order) {
+            @RequestParam(defaultValue = "0") Integer showType,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit,
+            @Sort @RequestParam(defaultValue = "add_time") String sort,
+            @Order @RequestParam(defaultValue = "desc") String order) {
         return wxOrderService.list(userId, showType, page, limit, sort, order);
     }
+
+    // @GetMapping("verification")
+    // public Object verification(@LoginUser Integer userId,
+    // @RequestParam Integer orderId) {
+    // return wxOrderService.verification(userId, orderId);
+    // }
 
     /**
      * 订单详情
@@ -60,7 +66,8 @@ public class WxOrderController {
      * 提交订单
      *
      * @param userId 用户ID
-     * @param body   订单信息，{ cartId：xxx, addressId: xxx, couponId: xxx, message: xxx, grouponRulesId: xxx,  grouponLinkId: xxx}
+     * @param body   订单信息，{ cartId：xxx, addressId: xxx, couponId: xxx, message: xxx,
+     *               grouponRulesId: xxx, grouponLinkId: xxx}
      * @return 提交订单操作结果
      */
     @PostMapping("submit")
@@ -94,6 +101,7 @@ public class WxOrderController {
 
     /**
      * 微信H5支付
+     * 
      * @param userId
      * @param body
      * @param request
@@ -107,10 +115,10 @@ public class WxOrderController {
     /**
      * 微信付款成功或失败回调接口
      * <p>
-     *  TODO
-     *  注意，这里pay-notify是示例地址，建议开发者应该设立一个隐蔽的回调地址
+     * TODO
+     * 注意，这里pay-notify是示例地址，建议开发者应该设立一个隐蔽的回调地址
      *
-     * @param request 请求内容
+     * @param request  请求内容
      * @param response 响应内容
      * @return 操作结果
      */
@@ -158,13 +166,13 @@ public class WxOrderController {
     /**
      * 待评价订单商品信息
      *
-     * @param userId  用户ID
-     * @param ogid 订单商品ID
+     * @param userId 用户ID
+     * @param ogid   订单商品ID
      * @return 待评价订单商品信息
      */
     @GetMapping("goods")
     public Object goods(@LoginUser Integer userId,
-                        @NotNull Integer ogid) {
+            @NotNull Integer ogid) {
         return wxOrderService.goods(userId, ogid);
     }
 

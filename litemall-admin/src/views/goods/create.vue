@@ -40,6 +40,8 @@
             :show-file-list="false"
             :headers="headers"
             :on-success="uploadPicUrl"
+            :on-error="uploadError"
+            :http-request="httpUpload"
             class="avatar-uploader"
             accept=".jpg,.jpeg,.png,.gif"
           >
@@ -55,6 +57,8 @@
             :headers="headers"
             :on-exceed="uploadOverrun"
             :on-success="handleGalleryUrl"
+            :on-error="uploadError"
+            :http-request="httpUpload"
             :on-remove="handleRemove"
             multiple
             accept=".jpg,.jpeg,.png,.gif"
@@ -167,6 +171,8 @@
               :show-file-list="false"
               :headers="headers"
               :on-success="uploadSpecPicUrl"
+              :on-error="uploadError"
+              :http-request="httpUpload"
               class="avatar-uploader"
               accept=".jpg,.jpeg,.png,.gif"
             >
@@ -232,6 +238,8 @@
               :show-file-list="false"
               :headers="headers"
               :on-success="uploadProductUrl"
+              :on-error="uploadError"
+              :http-request="httpUpload"
               class="avatar-uploader"
               accept=".jpg,.jpeg,.png,.gif"
             >
@@ -454,7 +462,12 @@ export default {
       this.newKeyword = ''
     },
     uploadPicUrl: function(response) {
-      this.goods.picUrl = response.data.url
+      if (response && response.errno === 0 && response.data && response.data.url) {
+        this.goods.picUrl = response.data.url
+      } else {
+        const msg = response && response.errmsg ? response.errmsg : '上传失败，请重新上传'
+        this.$message({ type: 'error', message: msg })
+      }
     },
     uploadOverrun: function() {
       this.$message({
@@ -463,8 +476,11 @@ export default {
       })
     },
     handleGalleryUrl(response, file, fileList) {
-      if (response.errno === 0) {
+      if (response && response.errno === 0 && response.data && response.data.url) {
         this.goods.gallery.push(response.data.url)
+      } else {
+        const msg = response && response.errmsg ? response.errmsg : '上传失败，请重新上传'
+        this.$message({ type: 'error', message: msg })
       }
     },
     handleRemove: function(file, fileList) {
@@ -495,7 +511,12 @@ export default {
       }
     },
     uploadSpecPicUrl: function(response) {
-      this.specForm.picUrl = response.data.url
+      if (response && response.errno === 0 && response.data && response.data.url) {
+        this.specForm.picUrl = response.data.url
+      } else {
+        const msg = response && response.errmsg ? response.errmsg : '上传失败，请重新上传'
+        this.$message({ type: 'error', message: msg })
+      }
     },
     handleSpecificationShow() {
       this.specForm = { specification: '', value: '', picUrl: '' }
@@ -600,7 +621,27 @@ export default {
       this.productVisiable = true
     },
     uploadProductUrl: function(response) {
-      this.productForm.url = response.data.url
+      if (response && response.errno === 0 && response.data && response.data.url) {
+        this.productForm.url = response.data.url
+      } else {
+        const msg = response && response.errmsg ? response.errmsg : '上传失败，请重新上传'
+        this.$message({ type: 'error', message: msg })
+      }
+    },
+    uploadError: function(err) {
+      const msg = (err && err.message) ? err.message : '上传失败，请重新上传'
+      this.$message({ type: 'error', message: msg })
+    },
+    httpUpload: function(option) {
+      const formData = new FormData()
+      formData.append('file', option.file)
+      createStorage(formData)
+        .then(res => {
+          option.onSuccess(res.data, option.file)
+        })
+        .catch(err => {
+          option.onError(err)
+        })
     },
     handleProductEdit() {
       for (var i = 0; i < this.products.length; i++) {

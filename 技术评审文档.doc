@@ -1,0 +1,52 @@
+JoyPick 技术评审文档
+
+1. 模块架构
+● 后端模块：`litemall-wx-api`（小程序后端）、`litemall-admin-api`（管理后端）、`litemall-core`（共性能力：支付/通知/二维码/任务/存储）、`litemall-db`（数据访问与领域模型）。
+● 数据库与基础设施：MySQL（Druid 连接池）；对象存储与二维码能力可选对接（本地/阿里云/腾讯云/七牛）。
+
+2. 运行与端口
+● 管理后端服务端口：`8083`
+● 小程序后端服务端口：`8082`
+● 端口与健康：端口连通性与服务日志已验证；如需进一步校验，使用 `Test-NetConnection` 检查本机端口连通。
+
+3. 订单状态与流转
+● 主状态：`201`（已付款未发货）→`301`（已发货）→`401/402`（已收货）
+● 定义与文案：`litemall-db/src/main/java/org/linlinjava/litemall/db/util/OrderUtil.java:24`、`litemall-db/src/main/java/org/linlinjava/litemall/db/util/OrderUtil.java:82-96`
+● 操作可用性：根据状态构建操作选项，`litemall-db/src/main/java/org/linlinjava/litemall/db/util/OrderUtil.java:101-147`
+
+4. 发货与物流
+● 管理后台发货：运营在后台回填 `shipChannel/shipSn` 并推进订单至“已发货”，`litemall-admin-api/src/main/java/org/linlinjava/litemall/admin/service/AdminOrderService.java:194-227`
+● 发货短信通知用户：`AdminOrderService.java:220-224`
+● 小程序订单详情的物流展示：`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:205-229`
+
+5. 支付与回调
+● 预支付与H5支付：`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:608-660`、`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:670-714`
+● 微信回调：成功后更新订单为已付款并触发通知，`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:727-823`
+● 支付成功通知：短信通知用户与门店运营人员（订单号后6位/必要信息）；运营短信发送位置参考 `WxOrderService.java:517`、`WxOrderService.java:817`
+
+6. 通知实现与配置
+● 通知服务：以短信为主；邮件暂不启用（`litemall.notify.mail.enable=false`），`litemall-core/src/main/java/org/linlinjava/litemall/core/notify/NotifyService.java:24-31`、`NotifyService.java:54-65`
+● 通知类型：`PAY_SUCCEED/SHIP/REFUND/CAPTCHA`，`litemall-core/src/main/java/org/linlinjava/litemall/core/notify/NotifyType.java:3-7`
+● 自动装配与渠道：阿里云/腾讯云短信，`litemall-core/src/main/java/org/linlinjava/litemall/core/notify/config/NotifyAutoConfiguration.java:25-49`、`NotifyAutoConfiguration.java:36-46`
+● 配置项：`litemall.notify.sms`，`litemall-core/src/main/java/org/linlinjava/litemall/core/notify/config/NotifyProperties.java:95-201`；示例参考 `docker/litemall/application.yml:52`
+
+7. 接口清单（MVP范围）
+● 管理后台：`POST /admin/order/ship` 发货（参数：`orderId/shipChannel/shipSn`）
+● 小程序端：
+  - `GET /wx/order/list` 订单列表（`showType` 支持待发货/待收货/待评价），`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:125-168`
+  - `GET /wx/order/detail` 订单详情（含物流信息），`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:177-232`
+  - `POST /wx/order/confirm` 确认收货，`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:880-911`
+  - `POST /wx/order/refund` 申请退款（按需开放），`litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:835-867`
+
+8. 门店运营短信通知
+● 配置建议：`litemall.notify.sms.operators: [13800000000, 13900000000]`
+● 实现位置：在支付成功逻辑处循环向 `operators` 发送 `NotifyType.PAY_SUCCEED` 模板短信，参考 `litemall-wx-api/src/main/java/org/linlinjava/litemall/wx/service/WxOrderService.java:517`、`WxOrderService.java:817`
+
+9. 验收与测试建议
+● 端口连通性：`8083` 与 `8082` 本机连通；接口联调通过订单下单→支付→后台发货→用户收货的闭环验证。
+● 通知到达：用户收到发货短信；门店运营人员在支付成功时收到短信（运营手机号配置后）。
+● 日志与异常：关注支付回调、发货操作与短信发送日志；必要时调整日志与超时设置。
+
+10. 风险与注意事项
+● 短信模板与签名需在平台审核通过后方可发送；关注频控与运营商黑名单策略。
+● 建议在正式环境前完成接口统一与安全审计（权限校验、越权、参数校验）。
