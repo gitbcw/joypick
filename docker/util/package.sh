@@ -28,4 +28,6 @@ npm run build:dep
 
 cd $LITEMALL_HOME
 mvn clean package
+# 确保持久化目录结构
+mkdir -p $LITEMALL_HOME/docker/litemall/storage $LITEMALL_HOME/docker/litemall/logs $LITEMALL_HOME/docker/litemall/backup
 cp -f $LITEMALL_HOME/litemall-all/target/litemall-all-*-exec.jar $LITEMALL_HOME/docker/litemall/litemall.jar

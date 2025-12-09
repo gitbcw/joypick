@@ -28,6 +28,9 @@ Page({
     //获取用户的登录信息
     if (app.globalData.hasLogin) {
       let userInfo = wx.getStorageSync('userInfo');
+      if (userInfo && userInfo.nickName === 'user123') {
+        userInfo.avatarUrl = '/static/images/xwj.png'
+      }
       this.setData({
         userInfo: userInfo,
         hasLogin: true

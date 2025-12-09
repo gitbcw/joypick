@@ -7,10 +7,10 @@
 
 # 请设置云服务器的IP地址和账户
 # 例如 ubuntu@122.51.199.160
-REMOTE=ubuntu@122.51.199.160
+REMOTE=root@47.107.151.70
 # 请设置本地SSH私钥文件id_rsa路径
 # 例如 /home/litemall/id_rsa
-ID_RSA=/d/00/cloud/litemall.txt
+ID_RSA=$HOME/.ssh/joypick_ed25519
 
 if test -z "$REMOTE"
 then
@@ -35,18 +35,18 @@ cd $LITEMALL_HOME || exit 2
 
 # 上传云服务器
 cd $LITEMALL_HOME || exit 2
-scp -i $ID_RSA -r  ./docker $REMOTE:/home/ubuntu/
+scp -i $ID_RSA -r  ./docker $REMOTE:/root/
 
 # 远程登录云服务器并执行reset脚本
 # 这里使用tr命令，因为有可能deploy.sh和reset.sh的换行格式是CRLF，而LINUX环境应该是LF
 ssh $REMOTE -i $ID_RSA << eeooff
-cd /home/ubuntu/docker/bin
+cd /root/docker/bin
 cat deploy.sh | tr -d '\r' > deploy2.sh
 mv deploy2.sh deploy.sh
 chmod +x deploy.sh
 cat reset.sh | tr -d '\r' > reset2.sh
 mv reset2.sh reset.sh
 chmod +x reset.sh
-sudo ./reset.sh
+./reset.sh
 exit
 eeooff

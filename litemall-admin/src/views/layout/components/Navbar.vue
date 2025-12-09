@@ -21,7 +21,7 @@
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="customAvatar" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -61,6 +61,7 @@ import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Notice from '@/components/Notice'
+import xwjPng from '@/icons/png/xwj.png'
 
 export default {
   components: {
@@ -70,11 +71,15 @@ export default {
     SizeSelect,
     Notice
   },
+  data() {
+    return {
+      customAvatar: xwjPng
+    }
+  },
   computed: {
     ...mapGetters([
       'sidebar',
       'name',
-      'avatar',
       'device'
     ])
   },

@@ -17,6 +17,7 @@ import router from './router'
 
 import './icons' // icon
 import './permission' // permission control
+import faviconPng from '@/icons/png/xwj.png'
 
 import * as filters from './filters' // global filters
 
@@ -80,6 +81,20 @@ new Vue({
   i18n,
   render: h => h(App)
 })
+
+;(function setFavicon(href) {
+  const link = document.querySelector("link[rel*='icon']")
+  if (link) {
+    link.type = 'image/png'
+    link.href = href
+  } else {
+    const l = document.createElement('link')
+    l.rel = 'icon'
+    l.type = 'image/png'
+    l.href = href
+    document.head.appendChild(l)
+  }
+})(faviconPng)
 
 // Hot updates
 // https://kazupon.github.io/vue-i18n/guide/hot-reload.html

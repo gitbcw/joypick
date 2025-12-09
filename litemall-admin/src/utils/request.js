@@ -7,8 +7,8 @@ axios.defaults.withCredentials = true
 
 // create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // api 的 base_url
-  timeout: 5000 // request timeout
+  baseURL: process.env.VUE_APP_BASE_API || '/admin',
+  timeout: 5000
 })
 
 // request interceptor
