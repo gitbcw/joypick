@@ -42,17 +42,18 @@ public class AdminOrderController {
      * @return
      */
     @RequiresPermissions("admin:order:list")
-    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "查询")
+    @RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "查询")
     @GetMapping("/list")
     public Object list(String nickname, String consignee, String orderSn,
-                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
-                       @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
-                       @RequestParam(required = false) List<Short> orderStatusArray,
-                       @RequestParam(defaultValue = "1") Integer page,
-                       @RequestParam(defaultValue = "10") Integer limit,
-                       @Sort @RequestParam(defaultValue = "add_time") String sort,
-                       @Order @RequestParam(defaultValue = "desc") String order) {
-         return adminOrderService.list(nickname, consignee, orderSn, start, end, orderStatusArray, page, limit, sort, order);
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+            @RequestParam(required = false) List<Short> orderStatusArray,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer limit,
+            @Sort @RequestParam(defaultValue = "add_time") String sort,
+            @Order @RequestParam(defaultValue = "desc") String order) {
+        return adminOrderService.list(nickname, consignee, orderSn, start, end, orderStatusArray, page, limit, sort,
+                order);
     }
 
     /**
@@ -66,13 +67,26 @@ public class AdminOrderController {
     }
 
     /**
+     * 物流查询（按编码与单号）
+     *
+     * @param expCode 快递公司编码，例如 YD、ZTO、YTO 等
+     * @param expNo   物流单号
+     * @return 物流轨迹信息
+     */
+    @GetMapping("/express")
+    public Object express(@RequestParam String expCode, @RequestParam String expNo,
+            @RequestParam(required = false) String customerName) {
+        return ResponseUtil.ok(expressService.getExpressInfo(expCode, expNo, customerName));
+    }
+
+    /**
      * 订单详情
      *
      * @param id
      * @return
      */
     @RequiresPermissions("admin:order:read")
-    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "详情")
+    @RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "详情")
     @GetMapping("/detail")
     public Object detail(@NotNull Integer id) {
         return adminOrderService.detail(id);
@@ -85,7 +99,7 @@ public class AdminOrderController {
      * @return 订单退款操作结果
      */
     @RequiresPermissions("admin:order:refund")
-    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单退款")
+    @RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单退款")
     @PostMapping("/refund")
     public Object refund(@RequestBody String body) {
         return adminOrderService.refund(body);
@@ -98,14 +112,14 @@ public class AdminOrderController {
      * @return 订单操作结果
      */
     @RequiresPermissions("admin:order:ship")
-    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单发货")
+    @RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单发货")
     @PostMapping("/ship")
     public Object ship(@RequestBody String body) {
         return adminOrderService.ship(body);
     }
 
     @RequiresPermissions("admin:order:pay")
-    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单收款")
+    @RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单收款")
     @PostMapping("/pay")
     public Object pay(@RequestBody String body) {
         return adminOrderService.pay(body);
@@ -118,7 +132,7 @@ public class AdminOrderController {
      * @return 订单操作结果
      */
     @RequiresPermissions("admin:order:delete")
-    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单删除")
+    @RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单删除")
     @PostMapping("/delete")
     public Object delete(@RequestBody String body) {
         return adminOrderService.delete(body);
@@ -131,7 +145,7 @@ public class AdminOrderController {
      * @return 订单操作结果
      */
     @RequiresPermissions("admin:order:reply")
-    @RequiresPermissionsDesc(menu = {"商场管理", "订单管理"}, button = "订单商品回复")
+    @RequiresPermissionsDesc(menu = { "商场管理", "订单管理" }, button = "订单商品回复")
     @PostMapping("/reply")
     public Object reply(@RequestBody String body) {
         return adminOrderService.reply(body);

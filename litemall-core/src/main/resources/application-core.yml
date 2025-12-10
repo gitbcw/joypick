@@ -52,9 +52,11 @@ litemall:
 
   # 快鸟物流查询配置
   express:
-    enable: false
-    appId: "XXXXXXXXX"
-    appKey: "XXXXXXXXXXXXXXXXXXXXXXXXX"
+    enable: ${KDN_ENABLE:false}
+    appId: ${KDN_APP_ID:}
+    appKey: ${KDN_APP_KEY:}
+    requestType: ${KDN_REQUEST_TYPE:8002}
+    callbackUrl: ${KDN_CALLBACK_URL:}
     vendors:
     - code: "ZTO"
       name: "中通快递"

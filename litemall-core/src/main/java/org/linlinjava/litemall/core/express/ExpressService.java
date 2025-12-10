@@ -22,7 +22,7 @@ import java.util.Map;
 public class ExpressService {
 
     private final Log logger = LogFactory.getLog(ExpressService.class);
-    //请求url
+    // 请求url
     private String ReqURL = "http://api.kdniao.com/Ebusiness/EbusinessOrderHandle.aspx";
 
     private ExpressProperties properties;
@@ -61,12 +61,16 @@ public class ExpressService {
      * @return
      */
     public ExpressInfo getExpressInfo(String expCode, String expNo) {
+        return getExpressInfo(expCode, expNo, null);
+    }
+
+    public ExpressInfo getExpressInfo(String expCode, String expNo, String customerName) {
         if (!properties.isEnable()) {
             return null;
         }
 
         try {
-            String result = getOrderTracesByJson(expCode, expNo);
+            String result = getOrderTracesByJson(expCode, expNo, customerName);
             ObjectMapper objMap = new ObjectMapper();
             ExpressInfo ei = objMap.readValue(result, ExpressInfo.class);
             ei.setShipperName(getVendorName(expCode));
@@ -83,20 +87,34 @@ public class ExpressService {
      *
      * @throws Exception
      */
-    private String getOrderTracesByJson(String expCode, String expNo) throws Exception {
-        String requestData = "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
+    private String getOrderTracesByJson(String expCode, String expNo, String customerName) throws Exception {
+        String reqType = properties.getRequestType();
+        String requestData;
+        if ("8002".equals(reqType)) {
+            if (expCode != null && !expCode.isEmpty()) {
+                requestData = "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
+            } else {
+                requestData = "{'OrderCode':'','LogisticCode':'" + expNo + "'}";
+            }
+            if (customerName != null && !customerName.isEmpty()) {
+                requestData = requestData.substring(0, requestData.length() - 1) + ",\"CustomerName\":\"" + customerName
+                        + "\"}";
+            }
+        } else {
+            requestData = "{'OrderCode':'','ShipperCode':'" + expCode + "','LogisticCode':'" + expNo + "'}";
+        }
 
         Map<String, String> params = new HashMap<String, String>();
         params.put("RequestData", URLEncoder.encode(requestData, "UTF-8"));
         params.put("EBusinessID", properties.getAppId());
-        params.put("RequestType", "1002");
+        params.put("RequestType", reqType == null || reqType.isEmpty() ? "1002" : reqType);
         String dataSign = encrypt(requestData, properties.getAppKey(), "UTF-8");
         params.put("DataSign", URLEncoder.encode(dataSign, "UTF-8"));
         params.put("DataType", "2");
 
         String result = HttpUtil.sendPost(ReqURL, params);
 
-        //根据公司业务处理返回的信息......
+        // 根据公司业务处理返回的信息......
 
         return result;
     }
@@ -145,6 +163,5 @@ public class ExpressService {
 
         return null;
     }
-
 
 }

@@ -172,3 +172,11 @@ litemall = Spring Boot后端 + Vue管理员前端 + 微信小程序用户前端 
 
 [MIT](https://github.com/linlinjava/litemall/blob/master/LICENSE)
 Copyright (c) 2018-present linlinjava
+
+## Docker 部署与安全
+
+- 上传部署不重置：`./docker/util/lazy.ps1 -ResetDb:$false -Env prod`
+- 开发受控重置：`./docker/util/lazy.ps1 -ResetDb:$true -Env dev`
+- 生产环境禁止重置：设置 `ENV=prod` 时 `reset.sh` 会拒绝执行
+- 如需全量清空并重新初始化，请在远端执行：`ENV=dev ./docker/bin/reset.sh --wipe`
+- 数据在重置前会自动备份到 `docker/litemall/backup`

@@ -13,6 +13,7 @@
       <el-table-column align="center" :label="$t('sys_role.table.name')" prop="name" sortable />
 
       <el-table-column align="center" :label="$t('sys_role.table.desc')" prop="desc" />
+      <el-table-column align="center" label="手机号" prop="mobile" />
 
       <el-table-column align="center" :label="$t('sys_role.table.actions')" class-name="small-padding fixed-width">
         <template slot-scope="scope">
@@ -33,6 +34,9 @@
         </el-form-item>
         <el-form-item :label="$t('sys_role.form.desc')" prop="desc">
           <el-input v-model="dataForm.desc" />
+        </el-form-item>
+        <el-form-item label="手机号" prop="mobile">
+          <el-input v-model="dataForm.mobile" placeholder="用于接收运营通知的手机号" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -87,7 +91,8 @@ export default {
       dataForm: {
         id: undefined,
         name: undefined,
-        desc: undefined
+        desc: undefined,
+        mobile: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -98,6 +103,9 @@ export default {
       rules: {
         name: [
           { required: true, message: '角色名称不能为空', trigger: 'blur' }
+        ],
+        mobile: [
+          { pattern: /^\d{6,20}$/ , message: '手机号格式不正确', trigger: 'blur' }
         ]
       },
       permissionDialogFormVisible: false,
@@ -135,7 +143,8 @@ export default {
       this.dataForm = {
         id: undefined,
         name: undefined,
-        desc: undefined
+        desc: undefined,
+        mobile: ''
       }
     },
     handleCreate() {

@@ -1,6 +1,8 @@
 Param(
   [string]$Remote = 'root@47.107.151.70',
-  [string]$KeyPath = "$env:USERPROFILE\.ssh\joypick_ed25519"
+  [string]$KeyPath = "$env:USERPROFILE\.ssh\joypick_ed25519",
+  [switch]$ResetDb,
+  [ValidateSet('dev','prod')][string]$Env = 'dev'
 )
 $ErrorActionPreference = 'Stop'
 $ssh = Get-Command ssh -ErrorAction SilentlyContinue
@@ -35,7 +37,15 @@ if (-not $jar) { Write-Error 'Jar not found'; exit 2 }
 Copy-Item -Force $jar.FullName (Join-Path $LITEMALL_HOME 'docker\litemall\litemall.jar')
 $destSpec = $Remote + ':/root/'
 & scp -i $KeyPath -r (Join-Path $LITEMALL_HOME 'docker') $destSpec
-$remoteCmd = @'
+$remoteDeploy = @'
+mkdir -p /root/docker/litemall/storage /root/docker/litemall/logs /root/docker/litemall/backup
+cd /root/docker/bin
+cat deploy.sh | tr -d '\r' > deploy2.sh
+mv deploy2.sh deploy.sh
+chmod +x deploy.sh
+ENV=$Env ./deploy.sh
+'@
+$remoteReset = @'
 mkdir -p /root/docker/litemall/storage /root/docker/litemall/logs /root/docker/litemall/backup
 cd /root/docker/bin
 cat deploy.sh | tr -d '\r' > deploy2.sh
@@ -44,6 +54,10 @@ chmod +x deploy.sh
 cat reset.sh | tr -d '\r' > reset2.sh
 mv reset2.sh reset.sh
 chmod +x reset.sh
-./reset.sh
+ENV=$Env ./reset.sh
 '@
-& ssh -i $KeyPath $Remote $remoteCmd
+if ($ResetDb) {
+  & ssh -i $KeyPath $Remote $remoteReset
+} else {
+  & ssh -i $KeyPath $Remote $remoteDeploy
+}

@@ -701,6 +701,7 @@ CREATE TABLE `litemall_role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(63) NOT NULL COMMENT '角色名称',
   `desc` varchar(1023) DEFAULT NULL COMMENT '角色描述',
+  `mobile` varchar(20) NOT NULL DEFAULT '' COMMENT '运营通知手机号',
   `enabled` tinyint(1) DEFAULT '1' COMMENT '是否启用',
   `add_time` datetime DEFAULT NULL COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',

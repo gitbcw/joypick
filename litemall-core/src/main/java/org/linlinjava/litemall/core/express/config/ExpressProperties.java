@@ -11,6 +11,7 @@ public class ExpressProperties {
     private boolean enable;
     private String appId;
     private String appKey;
+    private String requestType = "1002";
     private List<Map<String, String>> vendors = new ArrayList<>();
 
     public boolean isEnable() {
@@ -43,5 +44,13 @@ public class ExpressProperties {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(String requestType) {
+        this.requestType = requestType;
     }
 }

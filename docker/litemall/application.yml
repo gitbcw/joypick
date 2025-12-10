@@ -5,22 +5,22 @@ spring:
     encoding: UTF-8
   datasource:
     druid:
-      url:  jdbc:mysql://mysql:3306/litemall?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
-      driver-class-name:  com.mysql.cj.jdbc.Driver
-      username:  litemall
-      password:  litemall123456
-      initial-size:  10
-      max-active:  50
-      min-idle:  10
-      max-wait:  60000
-      pool-prepared-statements:  true
-      max-pool-prepared-statement-per-connection-size:  20
-      validation-query:  SELECT 1 FROM DUAL
-      test-on-borrow:  false
-      test-on-return:  false
-      test-while-idle:  true
-      time-between-eviction-runs-millis:  60000
-      filters:  stat,wall
+      url: jdbc:mysql://mysql:3306/litemall?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: litemall
+      password: litemall123456
+      initial-size: 10
+      max-active: 50
+      min-idle: 10
+      max-wait: 60000
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: SELECT 1 FROM DUAL
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      filters: stat,wall
 
 server:
   port: 8080
@@ -29,9 +29,9 @@ logging:
   config: classpath:logback-spring.xml
 
 pagehelper:
-  helperDialect:  mysql
+  helperDialect: mysql
   reasonable: true
-  supportMethodsArguments:  true
+  supportMethodsArguments: true
   params: count=countSql
 
 litemall:
@@ -41,7 +41,7 @@ litemall:
     app-secret: e04004829d4c383b4db7769d88dfbca1
     mch-id: 111111
     mch-key: xxxxxx
-    notify-url: http://122.51.199.160:8080/wx/order/pay-notify
+    notify-url: http://47.107.151.70:8080/wx/order/pay-notify
     # 商户证书文件路径
     # 请参考“商户证书”一节 https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=4_3
     key-path: xxxxx
@@ -85,9 +85,10 @@ litemall:
 
   # 快鸟物流查询配置
   express:
-    enable: false
-    appId: "XXXXXXXXX"
-    appKey: "XXXXXXXXXXXXXXXXXXXXXXXXX"
+    enable: ${KDN_ENABLE:false}
+    appId: ${KDN_APP_ID:}
+    appKey: ${KDN_APP_KEY:}
+    requestType: ${KDN_REQUEST_TYPE:8002}
     vendors:
       - code: "ZTO"
         name: "中通快递"
@@ -123,7 +124,7 @@ litemall:
     # 本地对象存储配置信息
     local:
       storagePath: storage
-      address: http://122.51.199.160:8080/wx/storage/fetch/
+      address: http://47.107.151.70:8080/wx/storage/fetch/
     # 阿里云对象存储配置信息
     aliyun:
       endpoint: oss-cn-shenzhen.aliyuncs.com

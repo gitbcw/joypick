@@ -13,6 +13,21 @@ ROOT=root
 PASSWORD=litemall123456
 BASE_DIR="$(cd "$(dirname "$0")"/.. && pwd)"
 
+if [ "$ENV" = "prod" ]; then
+  echo "禁止在生产环境执行重置"
+  exit 1
+fi
+
+WIPE=false
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --wipe)
+      WIPE=true
+      ;;
+  esac
+  shift
+done
+
 if test -z "$PASSWORD"
 then
   echo "请设置云服务器MySQL的root账号密码"
@@ -41,8 +56,19 @@ docker image prune -f
 
 # 删除db/data文件夹内文件重置数据
 # 这样docker启动时会自动运行db/init-sql脚本，导入新的数据
-cd "$BASE_DIR/db/data" || exit 1
-rm -rf ./**
+if [ "$WIPE" = "true" ]; then
+  bash "$BASE_DIR/bin/backup.sh"
+  cd "$BASE_DIR/db/data" || exit 1
+  rm -rf ./**
+fi
 
 cd "$BASE_DIR" || exit 3
 compose up -d
+
+if [ "$WIPE" != "true" ]; then
+  until docker exec mysql mysql -uroot -p"$PASSWORD" -e "SELECT 1" >/dev/null 2>&1; do
+    sleep 2
+  done
+  docker exec mysql mysql -uroot -p"$PASSWORD" -e "DROP DATABASE IF EXISTS litemall; CREATE DATABASE litemall DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;"
+  docker exec -i mysql mysql -uroot -p"$PASSWORD" litemall < "$BASE_DIR/db/init-sql/litemall.sql"
+fi
