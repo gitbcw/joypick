@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>架构综述·模板</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { margin: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; color: #0f172a; }
+    .doc { max-width: 980px; margin: 28px auto; padding: 0 20px; }
+    h1 { font-size: 26px; margin: 0 0 12px; }
+    h2 { font-size: 20px; margin: 24px 0 8px; }
+    p { margin: 10px 0; }
+    ul { margin: 8px 0 8px 22px; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; background: #f8fafc; }
+  </style>
+</head>
+<body>
+  <main class="doc">
+    <h1>架构综述</h1>
+    <p>系统概览与模块边界、依赖与数据流、部署拓扑。</p>
+    <div class="grid">
+      <div class="card">
+        <h2>模块边界</h2>
+        <ul>
+          <li>模块 A：职责与输入输出</li>
+          <li>模块 B：职责与输入输出</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>依赖关系</h2>
+        <ul>
+          <li>内部依赖：模块间调用链</li>
+          <li>外部依赖：第三方服务/库</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>数据流</h2>
+        <p>关键路径与时序说明。</p>
+      </div>
+      <div class="card">
+        <h2>部署拓扑</h2>
+        <p>环境、端口与资源配比。</p>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DocM</title>
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif; color: #1f2328; }
+    .layout { display: grid; grid-template-columns: 280px 1fr; height: 100%; }
+    .sidebar { border-right: 1px solid #e1e4e8; padding: 12px; overflow-y: auto; }
+    .brand { font-weight: 600; margin-bottom: 8px; }
+    .search { width: 100%; padding: 8px; border: 1px solid #d0d7de; border-radius: 6px; margin-bottom: 12px; }
+    .menu { list-style: none; margin: 0; padding: 0; }
+    .menu-item { display: block; padding: 8px 10px; border-radius: 6px; text-decoration: none; color: inherit; }
+    .menu-item:hover { background: #f6f8fa; }
+    .menu-item.active { background: #e6f0ff; color: #0052cc; }
+    .folder { margin: 4px 0; }
+    .folder-head { display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 8px; border-radius: 6px; }
+    .folder-head:hover { background: #f6f8fa; }
+    .chev { width: 12px; text-align: center; }
+    .children { margin-left: 14px; }
+    .content { padding: 0; overflow: hidden; }
+    .viewer { width: 100%; height: 100%; border: 0; }
+    .content h1, .content h2 { margin-top: 0; }
+    .empty { color: #6e7781; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">JoyPick 文档</div>
+      <input id="search" class="search" type="search" placeholder="搜索" />
+      <ul id="menu" class="menu"></ul>
+    </aside>
+    <main class="content">
+      <iframe id="viewer" class="viewer"></iframe>
+    </main>
+  </div>
+  <script>
+    const state = { items: [], activePath: null, open: new Set() };
+    const menuEl = document.getElementById('menu');
+    const viewerEl = document.getElementById('viewer');
+    const searchEl = document.getElementById('search');
+
+    function renderMenu(filter = '') {
+      menuEl.innerHTML = '';
+      const q = filter.trim().toLowerCase();
+      if (q) {
+        const leaves = collectLeaves(state.items).filter(i => (i.title || '').toLowerCase().includes(q));
+        if (!leaves.length) {
+          const li = document.createElement('li');
+          li.className = 'empty';
+          li.textContent = '没有匹配的文档';
+          menuEl.appendChild(li);
+          return;
+        }
+        for (const item of leaves) {
+          const a = document.createElement('a');
+          a.href = '#' + item.path;
+          a.textContent = item.title || item.path;
+          a.className = 'menu-item' + (item.path === state.activePath ? ' active' : '');
+          a.addEventListener('click', (e) => { e.preventDefault(); loadDoc(item.path); });
+          const li = document.createElement('li');
+          li.appendChild(a);
+          menuEl.appendChild(li);
+        }
+        return;
+      }
+      renderNodes(state.items, menuEl);
+    }
+
+    function renderNodes(nodes, container) {
+      for (const node of nodes) {
+        if (node.children && node.children.length) {
+          const li = document.createElement('li');
+          li.className = 'folder';
+          const head = document.createElement('div');
+          head.className = 'folder-head';
+          const chev = document.createElement('span');
+          chev.className = 'chev';
+          const open = state.open.has(node.id || node.title);
+          chev.textContent = open ? '▾' : '▸';
+          const text = document.createElement('span');
+          text.textContent = node.title || node.id;
+          head.appendChild(chev);
+          head.appendChild(text);
+          head.addEventListener('click', () => {
+            const key = node.id || node.title;
+            if (state.open.has(key)) state.open.delete(key); else state.open.add(key);
+            renderMenu(document.getElementById('search').value);
+          });
+          li.appendChild(head);
+          if (open) {
+            const ul = document.createElement('ul');
+            ul.className = 'menu children';
+            renderNodes(node.children, ul);
+            li.appendChild(ul);
+          }
+          container.appendChild(li);
+        } else {
+          const a = document.createElement('a');
+          a.href = '#' + node.path;
+          a.textContent = node.title || node.path;
+          a.className = 'menu-item' + (node.path === state.activePath ? ' active' : '');
+          a.addEventListener('click', (e) => { e.preventDefault(); loadDoc(node.path); });
+          const li = document.createElement('li');
+          li.appendChild(a);
+          container.appendChild(li);
+        }
+      }
+    }
+
+    function collectLeaves(nodes) {
+      const out = [];
+      for (const n of nodes) {
+        if (n.children && n.children.length) out.push(...collectLeaves(n.children));
+        else out.push(n);
+      }
+      return out;
+    }
+
+    async function loadCatalog() {
+      try {
+        const res = await fetch('catalog.json');
+        if (!res.ok) throw new Error('catalog');
+        const data = await res.json();
+        state.items = normalizeItems(data.items || []);
+      } catch (e) {
+        state.items = [];
+      }
+      const initial = location.hash ? location.hash.slice(1) : (state.items[0] ? state.items[0].path : null);
+      renderMenu();
+      if (initial) loadDoc(initial);
+      window.addEventListener('hashchange', () => {
+        const p = location.hash.slice(1);
+        if (p && p !== state.activePath) loadDoc(p);
+      });
+    }
+
+    function normalizeItems(items) {
+      return items.map(x => x.children ? { id: x.id || x.title, title: x.title || x.id, children: normalizeItems(x.children) } : { id: x.id || x.path, title: x.title || x.path, path: x.path });
+    }
+
+    function loadDoc(path) {
+      state.activePath = path;
+      viewerEl.src = path;
+      history.replaceState(null, '', '#' + path);
+      renderMenu(searchEl.value);
+    }
+    viewerEl.addEventListener('load', () => {
+      renderMenu(searchEl.value);
+    });
+
+    searchEl.addEventListener('input', () => renderMenu(searchEl.value));
+    loadCatalog();
+  </script>
+</body>
+</html>

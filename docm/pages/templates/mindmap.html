@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>思维导图模板</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { margin: 0; height: 100%; }
+    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; color: #0f172a; }
+    .toolbar { padding: 10px 14px; border-bottom: 1px solid #e5e7eb; display: flex; gap: 8px; align-items: center; }
+    .canvas { position: relative; height: calc(100vh - 44px); overflow: auto; background: #fafafa; }
+    .stage { position: relative; margin: 20px; width: 1200px; height: 800px; }
+    .node { position: absolute; padding: 8px 10px; background: #fff; border: 1px solid #d0d7de; border-radius: 8px; box-shadow: 0 2px 8px rgba(27,31,35,.08); cursor: pointer; user-select: none; }
+    .node.root { font-weight: 600; background: #eef2ff; border-color: #c7d2fe; }
+    .node.collapsed::after { content: ' +' ; color: #2563eb; margin-left: 6px; }
+    .edge { position: absolute; inset: 0; pointer-events: none; }
+    .toolbar button { padding: 6px 10px; border-radius: 6px; border: 1px solid #d0d7de; background: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button id="reset">重置布局</button>
+    <button id="toggle" title="折叠/展开一级子节点">切换一级</button>
+  </div>
+  <div class="canvas">
+    <div id="stage" class="stage">
+      <svg id="edges" class="edge"></svg>
+    </div>
+  </div>
+  <script>
+    const data = {
+      text: '项目规划',
+      children: [
+        { text: '目标', children: [ { text: '上线 MVP' }, { text: '稳定演进' } ] },
+        { text: '里程碑', children: [ { text: '构建与部署' }, { text: '支付与售后' }, { text: '文档系统' } ] },
+        { text: '风险', children: [ { text: '合规' }, { text: '性能' }, { text: '费用' } ] },
+        { text: '体验', children: [ { text: '移动端' }, { text: '管理后台' } ] }
+      ]
+    };
+
+    const stage = document.getElementById('stage');
+    const edgesSvg = document.getElementById('edges');
+    const canvas = document.querySelector('.canvas');
+    const rootX = 180;  // 根节点距左边距
+    const dx = 240;     // 横向间隔
+    const dy = 90;      // 纵向最小间隔
+
+    function leavesCount(node) {
+      if (!node.children || !node.children.length || node.collapsed) return 1;
+      return node.children.map(leavesCount).reduce((a,b)=>a+b,0);
+    }
+
+    function layout(node, depth, yStart) {
+      const count = leavesCount(node);
+      const height = Math.max(count * dy, dy);
+      const yCenter = yStart + height / 2;
+      const x = depth * dx + rootX;
+      node._pos = { x, y: yCenter };
+      if (!node.collapsed && node.children && node.children.length) {
+        let yCursor = yStart;
+        for (const child of node.children) {
+          const childCount = leavesCount(child);
+          const childHeight = Math.max(childCount * dy, dy);
+          layout(child, depth + 1, yCursor);
+          yCursor += childHeight;
+        }
+      }
+      node._box = { w: measureText(node.text).w + 24, h: 32 };
+      return { height, count };
+    }
+
+    function measureText(text) {
+      const el = document.createElement('span');
+      el.style.visibility = 'hidden';
+      el.style.position = 'absolute';
+      el.style.whiteSpace = 'nowrap';
+      el.textContent = text;
+      stage.appendChild(el);
+      const w = el.offsetWidth;
+      stage.removeChild(el);
+      return { w };
+    }
+
+    function collectNodes(node, list=[]) {
+      list.push(node);
+      if (!node.collapsed && node.children) for (const c of node.children) collectNodes(c, list);
+      return list;
+    }
+
+    function render() {
+      // clear previous nodes but keep edges svg
+      stage.querySelectorAll('.node').forEach(n => n.remove());
+      edgesSvg.innerHTML = '';
+      const total = leavesCount(data) * dy + 40;
+      stage.style.height = Math.max(total, 600) + 'px';
+
+      layout(data, 0, 20);
+      const nodes = collectNodes(data);
+
+      // compute bounds based on nodes
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      for (const n of nodes) {
+        const { x, y } = n._pos; const { w, h } = n._box;
+        const left = x - w/2, right = x + w/2, top = y - h/2, bottom = y + h/2;
+        if (left < minX) minX = left; if (right > maxX) maxX = right;
+        if (top < minY) minY = top; if (bottom > maxY) maxY = bottom;
+      }
+      const needW = Math.max(maxX + 60, canvas.clientWidth, 1200);
+      const needH = Math.max(maxY + 60, 600);
+      stage.style.width = needW + 'px';
+      stage.style.height = needH + 'px';
+
+      const vw = stage.offsetWidth, vh = stage.offsetHeight;
+      edgesSvg.setAttribute('viewBox', `0 0 ${vw} ${vh}`);
+      edgesSvg.setAttribute('width', vw);
+      edgesSvg.setAttribute('height', vh);
+
+      // draw nodes
+      for (const n of nodes) {
+        const div = document.createElement('div');
+        div.className = 'node' + (n===data ? ' root' : '') + (n.collapsed ? ' collapsed' : '');
+        div.textContent = n.text;
+        const { x, y } = n._pos;
+        const { w, h } = n._box;
+        div.style.left = (x - w/2) + 'px';
+        div.style.top = (y - h/2) + 'px';
+        div.style.width = w + 'px';
+        div.style.height = h + 'px';
+        div.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (n.children && n.children.length) { n.collapsed = !n.collapsed; render(); }
+        });
+        stage.appendChild(div);
+      }
+
+      // edges
+      drawEdges(data);
+      // auto center view around root
+      if (data._pos) {
+        const targetLeft = Math.max(0, data._pos.x - canvas.clientWidth * 0.5);
+        canvas.scrollLeft = targetLeft;
+        const targetTop = Math.max(0, data._pos.y - canvas.clientHeight * 0.5);
+        canvas.scrollTop = targetTop;
+      }
+    }
+
+    function maxDepth(n) {
+      if (!n.children || !n.children.length || n.collapsed) return 1;
+      return 1 + Math.max(...n.children.map(c => maxDepth(c)));
+    }
+
+    function drawEdges(node) {
+      if (node.collapsed || !node.children || !node.children.length) return;
+      for (const c of node.children) {
+        const p = node._pos; const pb = node._box;
+        const q = c._pos;   const qb = c._box;
+        const x1 = p.x + pb.w/2; const y1 = p.y;
+        const x2 = q.x - qb.w/2; const y2 = q.y;
+        const mid = (x1 + x2) / 2;
+        const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('d', `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`);
+        path.setAttribute('fill','none');
+        path.setAttribute('stroke','#64748b');
+        path.setAttribute('stroke-width','2');
+        edgesSvg.appendChild(path);
+        drawEdges(c);
+      }
+    }
+
+    document.getElementById('reset').addEventListener('click', () => {
+      function expandAll(n){ n.collapsed=false; if(n.children) n.children.forEach(expandAll); }
+      expandAll(data); render();
+    });
+    document.getElementById('toggle').addEventListener('click', () => {
+      if (data.children) for (const c of data.children) c.collapsed = !(c.collapsed);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>

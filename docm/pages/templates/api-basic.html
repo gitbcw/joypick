@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>API 文档·基础模板</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body { margin: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial; color: #0f172a; }
+    .doc { max-width: 900px; margin: 28px auto; padding: 0 20px; }
+    h1 { font-size: 26px; margin: 0 0 12px; }
+    h2 { font-size: 20px; margin: 24px 0 8px; }
+    p { margin: 10px 0; }
+    .endpoint { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin: 14px 0; }
+    .badge { display: inline-block; font-size: 12px; padding: 2px 6px; border-radius: 6px; background: #eef2ff; color: #1d4ed8; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #e5e7eb; padding: 8px; text-align: left; font-size: 14px; }
+    code, pre { background: #0b1020; color: #b0c9ff; border-radius: 8px; }
+    pre { padding: 10px; overflow: auto; }
+  </style>
+</head>
+<body>
+  <main class="doc">
+    <h1>API 文档·基础模板</h1>
+    <p>适合契约为主的接口说明：端点、参数、响应、错误码、版本策略。</p>
+
+    <h2>端点</h2>
+    <div class="endpoint">
+      <div class="badge">GET</div>
+      <strong>/path/to/resource</strong>
+      <table>
+        <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>id</td><td>string</td><td>是</td><td>资源标识</td></tr>
+        </tbody>
+      </table>
+      <h3>响应示例</h3>
+      <pre><code>{
+  "code": 0,
+  "data": { "id": "123", "name": "demo" }
+}</code></pre>
+    </div>
+
+    <h2>错误码</h2>
+    <table>
+      <thead><tr><th>错误码</th><th>含义</th><th>处理建议</th></tr></thead>
+      <tbody>
+        <tr><td>40101</td><td>未授权</td><td>重新登录或刷新 token</td></tr>
+      </tbody>
+    </table>
+
+    <h2>版本策略</h2>
+    <p>说明兼容与升级策略，如 Header 版本、路径版本或参数能力位。</p>
+  </main>
+</body>
+</html>

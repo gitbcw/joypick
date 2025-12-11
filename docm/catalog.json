@@ -1,0 +1,92 @@
+{
+  "title": "JoyPick Docs",
+  "items": [
+    {
+      "id": "templates",
+      "title": "templates",
+      "children": [
+        {
+          "id": "adr",
+          "title": "adr",
+          "path": "pages/templates/adr.html"
+        },
+        {
+          "id": "api-basic",
+          "title": "api-basic",
+          "path": "pages/templates/api-basic.html"
+        },
+        {
+          "id": "architecture-overview",
+          "title": "architecture-overview",
+          "path": "pages/templates/architecture-overview.html"
+        },
+        {
+          "id": "article-visual",
+          "title": "article-visual",
+          "path": "pages/templates/article-visual.html"
+        },
+        {
+          "id": "changelog",
+          "title": "changelog",
+          "path": "pages/templates/changelog.html"
+        },
+        {
+          "id": "gallery",
+          "title": "gallery",
+          "path": "pages/templates/gallery.html"
+        },
+        {
+          "id": "mindmap",
+          "title": "mindmap",
+          "path": "pages/templates/mindmap.html"
+        },
+        {
+          "id": "release-notes",
+          "title": "release-notes",
+          "path": "pages/templates/release-notes.html"
+        },
+        {
+          "id": "rfc",
+          "title": "rfc",
+          "path": "pages/templates/rfc.html"
+        },
+        {
+          "id": "runbook",
+          "title": "runbook",
+          "path": "pages/templates/runbook.html"
+        },
+        {
+          "id": "text-basic",
+          "title": "text-basic",
+          "path": "pages/templates/text-basic.html"
+        },
+        {
+          "id": "text-serif",
+          "title": "text-serif",
+          "path": "pages/templates/text-serif.html"
+        }
+      ]
+    },
+    {
+      "id": "test",
+      "title": "test",
+      "children": [
+        {
+          "id": "feature",
+          "title": "feature",
+          "path": "pages/test/feature.html"
+        }
+      ]
+    },
+    {
+      "id": "usage",
+      "title": "usage",
+      "path": "pages/usage.html"
+    },
+    {
+      "id": "welcome",
+      "title": "welcome",
+      "path": "pages/welcome.html"
+    }
+  ]
+}

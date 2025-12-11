@@ -551,6 +551,7 @@ export const asyncRoutes = [
       title: 'app.menu.external_link',
       icon: 'link'
     },
+    hidden: true,
     children: [
       {
         path: 'https://cloud.tencent.com/product/cos',

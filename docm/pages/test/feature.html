@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>测试特色页面</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root { --bg: linear-gradient(135deg, #4f46e5, #06b6d4); --card:#fff; --text:#0f172a; }
+    html, body { height: 100%; margin: 0; }
+    body { background: var(--bg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    .wrap { display: grid; place-items: center; height: 100%; }
+    .card { width: min(680px, 90vw); background: var(--card); color: var(--text); border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,.2); overflow: hidden; }
+    .hero { padding: 24px 28px; background: rgba(255,255,255,.85); backdrop-filter: blur(6px); }
+    .hero h1 { margin: 0; font-size: 22px; }
+    .hero p { margin: 8px 0 0; color: #334155; }
+    .content { padding: 24px 28px; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 10px; border: none; cursor: pointer; background: #111827; color: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+    .box { padding: 12px; border-radius: 10px; background: #f1f5f9; }
+    .log { margin-top: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas; font-size: 12px; background: #0b1020; color: #b0c9ff; padding: 12px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="hero">
+        <h1>测试特色页面</h1>
+        <p>用于验证 `docm/pages/test/feature.html` 可被左侧目录加载并在右侧完整展示。</p>
+      </div>
+      <div class="content">
+        <button id="btn" class="btn">点击试试<span>⚡</span></button>
+        <div class="grid">
+          <div class="box">支持样式、脚本与相对资源</div>
+          <div class="box">中文路径与子文件夹均可</div>
+        </div>
+        <pre id="log" class="log">ready</pre>
+      </div>
+    </div>
+  </div>
+  <script>
+    const log = document.getElementById('log');
+    document.getElementById('btn').addEventListener('click', () => {
+      const t = new Date();
+      log.textContent = 'clicked at ' + t.toLocaleString();
+    });
+  </script>
+</body>
+</html>
