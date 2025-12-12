@@ -108,14 +108,17 @@ page {
 }
 
 .user_column_item_badge {
-  height: 28rpx;
-  width: 28rpx;
+  height: 32rpx;
+  width: 32rpx;
   position: absolute;
-  background: #b4282d;
+  background: #FF6666;
   color: #fff;
   border-radius: 50%;
   margin-top: 20rpx;
   margin-left: 40rpx;
+  font-size: 25rpx;
+  text-align: center;
+  line-height: 32rpx;
 }
 
 .user_column_item_image {
@@ -161,6 +164,6 @@ page {
   width: 100%;
   line-height: 100rpx;
   text-align: center;
-  color: red;
-  font-size: 30rpx;
+  color: #FF6666;
+  font-size: 36rpx;
 }

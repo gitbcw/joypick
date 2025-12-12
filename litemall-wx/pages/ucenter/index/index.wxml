@@ -11,11 +11,11 @@
   </view>
 
   <view class='user_column margin-t-50'>
-    <view class='user_column_item' bindtap='goOrderIndex' data-index='1' data-route='/pages/ucenter/order/order'>
+    <view class='user_column_item' bindtap='goOrder' data-index='1' data-route='/pages/ucenter/order/order'>
       <text class="user_column_item_badge" wx:if="{{order.unpaid != 0}}">{{order.unpaid}}</text>
       <image class='user_column_item_image' src='/static/images/pendpay.png'>
       </image>
-      <view class='user_column_item_text'>待付款</view>
+      <view class='user_column_item_text'>订单</view>
     </view>
     <view class='user_column_item' bindtap='goOrderIndex' data-index='2' data-route='/pages/ucenter/order/order'>
       <text class="user_column_item_badge" wx:if="{{order.unship != 0}}">{{order.unship}}</text>
@@ -27,9 +27,10 @@
       <image class='user_column_item_image' src='/static/images/receive.png'></image>
       <view class='user_column_item_text'>待收货</view>
     </view>
-    <view class='user_column_item' bindtap='goAfterSale'>
-      <image class='user_column_item_image' src='/static/images/aftersale.png'></image>
-      <view class='user_column_item_text'>售后</view>
+
+    <view class='user_column_item' bindtap='goAddress'>
+      <image class='user_column_item_image' src='/static/images/address.png'></image>
+      <view class='user_column_item_text'>地址管理</view>
     </view>
   </view>
 
@@ -46,10 +47,11 @@
       <image class='user_column_item_image' src='/static/images/footprint.png'></image>
       <view class='user_column_item_text'>浏览足迹</view>
     </view>
+    
 
-    <view class='user_column_item' bindtap='goAddress'>
-      <image class='user_column_item_image' src='/static/images/address.png'></image>
-      <view class='user_column_item_text'>地址管理</view>
+    <view class='user_column_item' bindtap='goAfterSale'>
+      <image class='user_column_item_image' src='/static/images/aftersale.png'></image>
+      <view class='user_column_item_text'>售后</view>
     </view>
   </view>
 
@@ -77,5 +79,5 @@
     <image class="icon" wx:if="{{showAll}}" src='/static/images/arr_up.png'></image>
   </view>
 
-  <!-- <view class="logout" wx:if="{{hasLogin}}" bindtap="exitLogin">退出登录</view> -->
+  <view class="logout" wx:if="{{hasLogin}}" bindtap="exitLogin">退出登录</view>
 </view>

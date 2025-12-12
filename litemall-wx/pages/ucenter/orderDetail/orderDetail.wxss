@@ -5,7 +5,6 @@ page {
 }
 
 .order-info {
-  padding-top: 25rpx;
   background: #fff;
   height: auto;
   overflow: hidden;
@@ -44,7 +43,7 @@ page {
 }
 
 .item-c .cost {
-  color: #b4282d;
+  color: #006699;
 }
 
 .item-c .btn {
@@ -57,7 +56,7 @@ page {
 }
 
 .item-c .btn.active {
-  background: #b4282d;
+  background: #006699;
   color: #fff;
 }
 
@@ -83,7 +82,7 @@ page {
 .order-goods .h .status {
   float: right;
   font-size: 30rpx;
-  color: #b4282d;
+  color: #006699;
 }
 
 .order-goods .item {
@@ -171,7 +170,7 @@ page {
 }
 
 .order-goods .item .btn.active {
-  background: #b4282d;
+  background: #006699;
   color: #fff;
 }
 
@@ -215,13 +214,13 @@ page {
 .order-bottom .pay-fee .label {
   display: inline-block;
   width: 140rpx;
-  color: #b4282d;
+  color: #006699;
 }
 
 .order-bottom .pay-fee .txt {
   display: inline-block;
   width: 140rpx;
-  color: #b4282d;
+  color: #006699;
 }
 
 .order-express {
@@ -248,13 +247,13 @@ page {
 .order-express .t {
   font-size: 29rpx;
   margin-left: 10.25rpx;
-  color: #a78845;
+  color: #006699;
 }
 
 .order-express .b {
   font-size: 29rpx;
   margin-left: 10.25rpx;
-  color: #a78845;
+  color: #006699;
 }
 
 .order-express .traces {

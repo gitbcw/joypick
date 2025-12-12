@@ -1,0 +1,40 @@
+:root {
+  --luckin-blue: #006699;
+  --luckin-blue-600: #005b80;
+  --luckin-blue-800: #004966;
+  --text-primary: #222;
+  --text-secondary: #666;
+  --bg-soft: #f7f8fa;
+  --card-radius: 20rpx;
+  --card-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+}
+
+.bg-primary { background-color: #006699; }
+.text-primary { color: #006699; }
+.text-secondary { color: var(--text-secondary); }
+
+.card {
+  background-color: #fff;
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+}
+
+.rounded { border-radius: var(--card-radius); }
+
+.press { transform: scale(0.98); opacity: 0.96; transition: transform 120ms ease, opacity 120ms ease; }
+
+.fade-in-up {
+  animation: fadeInUp 360ms ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate3d(0, 24rpx, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+.elevate { box-shadow: 0 12rpx 28rpx rgba(0,0,0,0.08); }
+
+/* Grid utilities */
+.grid { display: flex; flex-wrap: wrap; }
+.grid-center { align-items: center; justify-content: center; }
+

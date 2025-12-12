@@ -10,14 +10,16 @@ page {
 }
 
 .address-list {
-  padding-left: 31.25rpx;
-  background: #fff;
+  padding:0 20rpx;
   background-size: auto 10.5rpx;
   margin-bottom: 90rpx;
 }
 
 .address-list .item {
-  height: 156.55rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  padding: 0 30rpx;
+  height: 140rpx;
   align-items: center;
   display: flex;
   border-bottom: 1rpx solid #dcd9d9;
@@ -46,8 +48,8 @@ page {
   line-height: 28rpx;
   text-align: center;
   font-size: 20rpx;
-  color: #b4282d;
-  border: 1rpx solid #b4282d;
+  color: #006699;
+  border: 1rpx solid #006699;
   visibility: visible;
 }
 
@@ -79,12 +81,16 @@ page {
   height: auto;
   overflow: hidden;
   margin-right: 16.5rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .address-list .del {
   display: block;
   width: 52rpx;
   height: 52rpx;
+  line-height: 52rpx;
 }
 
 .add-address {
@@ -97,7 +103,7 @@ page {
   height: 90rpx;
   line-height: 98rpx;
   position: absolute;
-  bottom: 0;
+  bottom: 60rpx;
   left: 0;
   border-radius: 0;
   padding: 0;
@@ -105,14 +111,14 @@ page {
   margin-left: 5%;
   text-align: center;
   /* padding-left: -5rpx; */
-  font-size: 25rpx;
+  font-size: 28rpx;
   color: #f4f4f4;
   border-top-left-radius: 50rpx;
   border-bottom-left-radius: 50rpx;
   border-top-right-radius: 50rpx;
   border-bottom-right-radius: 50rpx;
   letter-spacing: 3rpx;
-  background-image: linear-gradient(to right, #9a9ba1 0%, #9a9ba1 100%);
+  background: #006699;
 }
 
 .empty-view {

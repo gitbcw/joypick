@@ -43,8 +43,7 @@
     "pages/ucenter/aftersaleDetail/aftersaleDetail"
   ],
   "window": {
-    "navigationStyle": "custom",
-    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarBackgroundColor": "#F4F4F4",
     "navigationBarTitleText": "欢乐小玩家",
     "enablePullDownRefresh": false,
     "navigationBarTextStyle": "black",

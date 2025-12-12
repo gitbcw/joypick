@@ -5,35 +5,46 @@ page {
 }
 
 .orders-switch {
+  box-sizing: border-box;
+  padding: 0 10rpx;
   width: 100%;
-  background: #fff;
+  background: #f4f4f4;
   height: 84rpx;
-  /* border-bottom: 1px solid rgba(0,0,0,.15); */
+}
+.orders-switch .order_box{
+  width: 100%;
+  height: 80rpx;
+  background: #006699;
+  border-radius: 60rpx;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 3rpx;
 }
 
-.orders-switch .item {
+.orders-switch .order_box .item {
+  flex-basis: 20%;
+  color: white;
+  text-align: center;
   display: inline-block;
-  height: 82rpx;
-  width: 18%;
-  padding: 0 15rpx;
+  height: 72rpx;
+  line-height: 72rpx;
   text-align: center;
 }
 
-.orders-switch .item .txt {
+.orders-switch .order_box .item .txt {
   display: inline-block;
-  height: 82rpx;
-  padding: 0 20rpx;
-  line-height: 82rpx;
-  color: #9a9ba1;
-  font-size: 30rpx;
-  width: 170rpx;
+  color: white;
+  font-size: 32rpx;
 }
 
-.orders-switch .item.active .txt {
-  color: #ab956d;
-  border-bottom: 4rpx solid #ab956d;
+.orders-switch .order_box .item.active {
+  background-color: white;
+  border-radius: 50rpx;
 }
-
+.orders-switch .order_box .item.active .txt {
+  color: #006699;
+}
 .no-order {
   width: 100%;
   height: auto;
@@ -64,7 +75,8 @@ page {
 }
 
 .order {
-  margin-top: 20rpx;
+  margin: 20rpx;
+  border-radius: 20rpx;
   background: #fff;
 }
 
@@ -84,7 +96,7 @@ page {
 
 .order .h .r {
   float: right;
-  color: #b4282d;
+  color: #006699;
   font-size: 24rpx;
 }
 

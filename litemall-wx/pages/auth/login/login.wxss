@@ -116,5 +116,5 @@
   border-top-right-radius: 50rpx;
   border-bottom-right-radius: 50rpx;
   letter-spacing: 3rpx;
-  background: #5c7f61;
+  background: #006699;
 }
