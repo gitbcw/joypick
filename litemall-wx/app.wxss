@@ -1,8 +1,13 @@
-/**app.wxss**/
-
+/**app.wxss **/
+page {
+  --primary-color: #f4f4f4;    /* 主题色 */
+  --font-size-base: 28rpx;     /* 基础字号 */
+  --padding-normal: 20rpx;     /* 常规内边距 */
+  --border-radius: 8rpx;       /* 圆角 */
+}
 .container {
   box-sizing: border-box;
-  background-color: #f4f4f4;
+  background-color: var(--primary-color);
   font-family: PingFangSC-Light, helvetica, 'Heiti SC';
 }
 

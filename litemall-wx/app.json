@@ -43,11 +43,12 @@
     "pages/ucenter/aftersaleDetail/aftersaleDetail"
   ],
   "window": {
+    "navigationStyle": "custom",
     "navigationBarBackgroundColor": "#FFFFFF",
-    "navigationBarTitleText": "litemall小程序商城",
+    "navigationBarTitleText": "欢乐小玩家",
     "enablePullDownRefresh": false,
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#FFFFFF",
+    "backgroundColor": "#f4f4f4",
     "backgroundTextStyle": "dark"
   },
   "tabBar": {

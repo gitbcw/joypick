@@ -6,6 +6,10 @@ var app = getApp();
 Page({
   data: {
     canIUseGetUserProfile: false,
+    statusBarHeight: 20,
+    navContentHeight: 48,
+    navTotalHeight: 68,
+    navTitle: '账户登录',
   },
   onLoad: function(options) {
     // 页面初始化 options为页面跳转所带来的参数
@@ -15,6 +19,12 @@ Page({
         canIUseGetUserProfile: true
       })
     }
+
+    const sysInfo = wx.getSystemInfoSync()
+    const statusBarHeight = sysInfo.statusBarHeight || 20
+    const navContentHeight = this.data.navContentHeight
+    const navTotalHeight = statusBarHeight + navContentHeight
+    this.setData({ statusBarHeight, navTotalHeight })
   },
   onReady: function() {
 
@@ -69,5 +79,8 @@ Page({
     wx.navigateTo({
       url: "/pages/auth/accountLogin/accountLogin"
     });
+  },
+  handleBack: function() {
+    wx.navigateBack({ delta: 1 })
   }
 })

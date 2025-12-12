@@ -6,8 +6,8 @@ var app = getApp();
 Page({
   data: {
     userInfo: {
-      nickName: '点击登录',
-      avatarUrl: '/static/images/my.png'
+      nickName: '点击登录 >',
+      avatarUrl: '/static/images/user.png'
     },
     order: {
       unpaid: 0,
@@ -15,7 +15,8 @@ Page({
       unrecv: 0,
       uncomment: 0
     },
-    hasLogin: false
+    hasLogin: false,
+    showAll:false
   },
   onLoad: function(options) {
     // 页面初始化 options为页面跳转所带来的参数
@@ -53,6 +54,11 @@ Page({
   },
   onUnload: function() {
     // 页面关闭
+  },
+  showAllMenu(){
+    this.setData({
+      showAll: !this.data.showAll
+    });
   },
   goLogin() {
     if (!this.data.hasLogin) {
