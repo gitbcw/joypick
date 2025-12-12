@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,6 +112,9 @@ public class WxOrderService {
     private LitemallRoleService roleService;
     @Autowired
     private LitemallPermissionService permissionService;
+    @Autowired
+    private LitemallOrderExpressService orderExpressService;
+    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
 
     /**
      * 订单列表
@@ -219,12 +223,33 @@ public class WxOrderService {
         // 订单状态为已发货且物流信息不为空
         // "YTO", "800669400640887922"
         if (order.getOrderStatus().equals(OrderUtil.STATUS_SHIP)) {
+            ExpressInfo ei = null;
+            // 先读快照（6小时内视为有效）
+            LitemallOrderExpress snap = orderExpressService.getByOrderId(order.getId());
+            if (snap != null && snap.getTracesJson() != null) {
+                LocalDateTime updated = snap.getUpdated();
+                boolean fresh = updated != null && Duration.between(updated, LocalDateTime.now()).toHours() < 6;
+                if (fresh) {
+                    try {
+                        ei = objectMapper.readValue(snap.getTracesJson(), ExpressInfo.class);
+                    } catch (Exception ignore) {
+                    }
+                }
+            }
             String customerName = null;
             String mobile = order.getMobile();
             if (mobile != null && mobile.length() >= 4) {
                 customerName = mobile.substring(mobile.length() - 4);
             }
-            ExpressInfo ei = expressService.getExpressInfo(order.getShipChannel(), order.getShipSn(), customerName);
+            if (ei == null) {
+                ei = expressService.getExpressInfo(order.getShipChannel(), order.getShipSn(), customerName);
+                // 写入/刷新快照
+                String vendorName = expressService.getVendorName(order.getShipChannel());
+                String state = ei == null ? null : ei.getState();
+                String tracesJson = ei == null ? null : org.linlinjava.litemall.core.util.JacksonUtil.toJson(ei);
+                orderExpressService.snapshot(order.getId(), order.getShipChannel(), order.getShipSn(), customerName,
+                        vendorName, state, tracesJson);
+            }
             if (ei == null) {
                 result.put("expressInfo", new ArrayList<>());
             } else {

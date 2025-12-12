@@ -10,6 +10,8 @@ import org.linlinjava.litemall.core.notify.NotifyService;
 import org.linlinjava.litemall.core.util.ResponseUtil;
 import org.linlinjava.litemall.core.validator.Order;
 import org.linlinjava.litemall.core.validator.Sort;
+import org.linlinjava.litemall.db.service.LitemallOrderExpressService;
+import org.linlinjava.litemall.db.service.LitemallOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +31,10 @@ public class AdminOrderController {
     private AdminOrderService adminOrderService;
     @Autowired
     private ExpressService expressService;
+    @Autowired
+    private LitemallOrderExpressService orderExpressService;
+    @Autowired
+    private LitemallOrderService orderService;
 
     /**
      * 查询订单
@@ -77,6 +83,59 @@ public class AdminOrderController {
     public Object express(@RequestParam String expCode, @RequestParam String expNo,
             @RequestParam(required = false) String customerName) {
         return ResponseUtil.ok(expressService.getExpressInfo(expCode, expNo, customerName));
+    }
+
+    /**
+     * 物流快照（写入/刷新指定订单的轨迹快照）
+     *
+     * @param orderId 订单ID
+     * @return 持久化后的结果
+     */
+    @PostMapping("/express/snapshot")
+    public Object snapshot(@RequestParam Integer orderId,
+            @RequestParam(required = false) String customerName) {
+        org.linlinjava.litemall.db.domain.LitemallOrder order = orderService.findById(orderId);
+        if (order == null) {
+            return ResponseUtil.badArgumentValue();
+        }
+        org.linlinjava.litemall.core.express.dao.ExpressInfo ei = expressService.getExpressInfo(order.getShipChannel(),
+                order.getShipSn(), customerName);
+        String mobile = order.getMobile();
+        String suffix = customerName;
+        if (suffix == null && mobile != null && mobile.length() >= 4) {
+            suffix = mobile.substring(mobile.length() - 4);
+        }
+        String vendorName = expressService.getVendorName(order.getShipChannel());
+        String state = ei == null ? null : ei.getState();
+        String tracesJson = ei == null ? null : org.linlinjava.litemall.core.util.JacksonUtil.toJson(ei);
+        orderExpressService.snapshot(order.getId(), order.getShipChannel(), order.getShipSn(), suffix,
+                vendorName, state, tracesJson);
+        return ResponseUtil.ok(ei);
+    }
+
+    /**
+     * 物流快照（按订单编号）
+     */
+    @PostMapping("/express/snapshotBySn")
+    public Object snapshotBySn(@RequestParam String orderSn,
+            @RequestParam(required = false) String customerName) {
+        org.linlinjava.litemall.db.domain.LitemallOrder order = orderService.findBySn(orderSn);
+        if (order == null) {
+            return ResponseUtil.badArgumentValue();
+        }
+        org.linlinjava.litemall.core.express.dao.ExpressInfo ei = expressService.getExpressInfo(order.getShipChannel(),
+                order.getShipSn(), customerName);
+        String mobile = order.getMobile();
+        String suffix = customerName;
+        if (suffix == null && mobile != null && mobile.length() >= 4) {
+            suffix = mobile.substring(mobile.length() - 4);
+        }
+        String vendorName = expressService.getVendorName(order.getShipChannel());
+        String state = ei == null ? null : ei.getState();
+        String tracesJson = ei == null ? null : org.linlinjava.litemall.core.util.JacksonUtil.toJson(ei);
+        orderExpressService.snapshot(order.getId(), order.getShipChannel(), order.getShipSn(), suffix,
+                vendorName, state, tracesJson);
+        return ResponseUtil.ok(ei);
     }
 
     /**
