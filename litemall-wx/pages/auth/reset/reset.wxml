@@ -1,4 +1,16 @@
 <view class="container">
+  <view class="custom-nav" style="padding-top: {{statusBarHeight}}px; height: {{navTotalHeight}}px;">
+    <view class="nav-inner">
+      <view class="nav-left" bindtap="handleBack" hover-class="nav-left-hover" hover-stay-time="100">
+        <view class="arrow"></view>
+      </view>
+      <view class="nav-center">
+        <text class="nav-title">{{navTitle}}</text>
+      </view>
+      <view class="nav-right"></view>
+    </view>
+  </view>
+  <view style="height: {{navTotalHeight}}px;"></view>
   <view class="form-box">
 
     <view class="form-item">
@@ -24,7 +36,7 @@
       <van-icon  wx:if="{{ confirmPassword.length > 0 }}" id="clear-confirm-password" class="clear" catchtap="clearInput" name="close" />
     </view>
 
-    <button type="default" class="reset-btn" bindtap="startReset">密码重置</button>
+    <button type="primary" class="reset-btn" bindtap="startReset">密码重置</button>
 
   </view>
 </view>

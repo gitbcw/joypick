@@ -8,12 +8,20 @@ Page({
     username: '',
     password: '',
     code: '',
-    loginErrorCount: 0
+    loginErrorCount: 0,
+    statusBarHeight: 20,
+    navContentHeight: 48,
+    navTotalHeight: 68,
+    navTitle: '登录'
   },
   onLoad: function(options) {
     // 页面初始化 options为页面跳转所带来的参数
     // 页面渲染完成
-
+    const sysInfo = wx.getSystemInfoSync()
+    const statusBarHeight = sysInfo.statusBarHeight || 20
+    const navContentHeight = this.data.navContentHeight
+    const navTotalHeight = statusBarHeight + navContentHeight
+    this.setData({ statusBarHeight, navTotalHeight })
   },
   onReady: function() {
 
@@ -113,5 +121,8 @@ Page({
         });
         break;
     }
+  },
+  handleBack: function() {
+    wx.navigateBack({ delta: 1 })
   }
 })

@@ -1,34 +1,64 @@
 page {
   height: 100%;
   width: 100%;
-  background: #f4f4f4;
+  background: var(--primary-color);
 }
 
 .container {
-  background: #f4f4f4;
+  background: var(--primary-color);
   height: auto;
   overflow: hidden;
   width: 100%;
 }
 
 .profile-info {
-  background-color: #ab956d;
-  color: #f4f4f4;
+  background: transparent;
   display: flex;
   align-items: center;
-  padding: 30rpx;
+  padding-left: 50rpx;
+  padding-top: 120rpx;
   font-size: 28rpx;
+  position: relative;
+  height: 440rpx;
+}
+.profile-info .desc{
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -70rpx;
+  margin: 0 auto;
+  width: 92%;
+  height: 80px;
+  background: white;
+  z-index: 1;
+  border-radius: 15px;
+  font-weight: bold;
+  box-sizing: border-box;
+  padding: 20rpx 40rpx;
+  font-size: 38rpx;
+}
+
+.profile-info .bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .profile-info .avatar {
-  height: 148rpx;
-  width: 148rpx;
+  height: 120rpx;
+  width: 120rpx;
   border-radius: 50%;
+  position: relative;
+  z-index: 2;
 }
 
 .profile-info .info {
+  position: relative;
+  z-index: 1;
   flex: 1;
-  height: 85rpx;
   padding-left: 31.25rpx;
 }
 
@@ -50,43 +80,16 @@ page {
   font-size: 30rpx;
 }
 
-.user_area {
-  /* border: 1px solid black; */
-  width: 100%;
-  height: 226rpx;
-  /* margin: 0 auto; */
-  margin-top: -8rpx;
-  background: #fff;
-  /* border-top: 1px solid #f4f4f4; */
+.down_arr{
+  text-align: center;
 }
 
-.user_row {
-  /* border: 1px solid black; */
-  height: 86rpx;
-  line-height: 86rpx;
-  border-bottom: 1px solid #fafafa;
-}
-
-.user_row_left {
-  /* border: 1px solid #757575; */
-  float: left;
-  height: 86rpx;
-  font-weight: 550;
-  line-height: 86rpx;
-  margin-left: 35rpx;
-  font-size: 26rpx;
-  letter-spacing: 1rpx;
-}
-
-.user_row_right {
-  /* border: 1px solid #757575; */
-  float: right;
-  height: 40rpx;
+.down_arr .icon{
   width: 40rpx;
-  font-weight: 550;
-  line-height: 86rpx;
-  margin-top: 28rpx;
-  margin-right: 30rpx;
+  height: 40rpx;
+}
+.margin-t-50{
+  margin-top: 80rpx;
 }
 
 .user_column {
@@ -100,20 +103,22 @@ page {
 .user_column_item {
   width: 30%;
   height: 140rpx;
-  background: #fff;
   text-align: center;
   position: relative;
 }
 
 .user_column_item_badge {
-  height: 28rpx;
-  width: 28rpx;
+  height: 32rpx;
+  width: 32rpx;
   position: absolute;
-  background: #b4282d;
+  background: #FF6666;
   color: #fff;
   border-radius: 50%;
   margin-top: 20rpx;
   margin-left: 40rpx;
+  font-size: 25rpx;
+  text-align: center;
+  line-height: 32rpx;
 }
 
 .user_column_item_image {
@@ -159,7 +164,6 @@ page {
   width: 100%;
   line-height: 100rpx;
   text-align: center;
-  background: #fff;
-  color: red;
-  font-size: 30rpx;
+  color: #FF6666;
+  font-size: 36rpx;
 }

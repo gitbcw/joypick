@@ -14,7 +14,7 @@
     <view class="rater">
       <text class="rater-title">评分</text>
       <block wx:for="{{stars}}" wx:key="*this" wx:for-item="item">
-        <van-icon name="star" bindtap="selectRater" color="#ab956d" data-star="{{item}}" wx:if="{{item < star}}"/>
+        <van-icon name="star" bindtap="selectRater" color="#006699" data-star="{{item}}" wx:if="{{item < star}}"/>
         <van-icon name="star-o" bindtap="selectRater" data-star="{{item}}" wx:else/>
       </block>
       <text class="rater-desc">{{starText}}</text>
